@@ -129,7 +129,7 @@ public class  WABOTTeleop extends OpMode {
         h.slideArm.setPower(armSlidePower);
         h.liftMotor.setPower(liftPower);
 
-        if(controller.returnToggleX(gamepad2) && !xHasToggle2){
+        /*if(controller.returnToggleX(gamepad2) && !xHasToggle2){
             h.LArmServo.setPosition(h.LEFTARMSERVO_OUT);
             h.RArmServo.setPosition(h.RIGHTARMSERVO_OUT);
             xHasToggle2 = true;
@@ -137,9 +137,9 @@ public class  WABOTTeleop extends OpMode {
             h.LArmServo.setPosition(h.LEFTARMSERVO_IN);
             h.RArmServo.setPosition(h.RIGHTARMSERVO_IN);
             xHasToggle2 = false;
-        }
+        }*/
 
-        if(controller.returnToggleDPadDown(gamepad2) && !hasStartedCap){
+        if(gamepad2.dpad_down && !hasStartedCap){
             h.capServo.setPosition(h.CAPSERVO_OUT);
             hasStartedCap = true;
             capTime = System.currentTimeMillis();
@@ -150,14 +150,12 @@ public class  WABOTTeleop extends OpMode {
         }
 
         // Toggleable
-        if(controller.returnToggleX(gamepad1) && xHasToggle){
+        if(controller.returnToggleX(gamepad1)){
             h.leftFound.setPosition(0.5f);
             h.rightFound.setPosition(1f);
-            xHasToggle = false;
-        } else if(controller.returnToggleX(gamepad1) && !xHasToggle){
+        } else {
             h.leftFound.setPosition(1f);
             h.rightFound.setPosition(0.5f);
-            xHasToggle = true;
         }
     }
 

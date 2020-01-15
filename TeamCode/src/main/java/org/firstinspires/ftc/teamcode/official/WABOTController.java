@@ -11,6 +11,7 @@ public class WABOTController {
     private Gamepad g2;
 
     private boolean[] checkBools = {true, true, true, true, true, true, true, true};
+    private int[] checkBools2 = {0, 0, 0, 0, 0, 0, 0, 0};
     private String[] buttonStrs = {"a", "b", "x", "y", "dpad_up", "dpad_down", "dpad_left", "dpad_right"};
 
 
@@ -30,63 +31,87 @@ public class WABOTController {
 
     public boolean returnToggleA(Gamepad g){
         int index = findIndex("a");
-        if(g.a && checkBools[index]){
-            checkBools[index] = false;
-            return g.a;
-        } else if(!checkBools[index] && !g.a){
-            checkBools[index] = true;
+        if(checkBools2[index] == 0 && g.a){
+            checkBools2[index] = 1;
+        } else if(!g.a && checkBools2[index] == 1){
+            if(checkBools[index]){
+                checkBools[index] = false;
+            } else {
+                checkBools[index] = true;
+            }
+            checkBools2[index] = 0;
         }
-        return false;
+        return checkBools[index];
     }
     public boolean returnToggleB(Gamepad g){
         int index = findIndex("b");
-        if(g.b && checkBools[index]){
-            checkBools[index] = false;
-            return g.b;
-        } else if(!checkBools[index] && !g.b){
-            checkBools[index] = true;
+        if(checkBools2[index] == 0 && g.b){
+            checkBools2[index] = 1;
+        } else if(!g.b && checkBools2[index] == 1){
+            if(checkBools[index]){
+                checkBools[index] = false;
+            } else {
+                checkBools[index] = true;
+            }
+            checkBools2[index] = 0;
         }
-        return false;
+        return checkBools[index];
     }
     public boolean returnToggleX(Gamepad g){
         int index = findIndex("x");
-        if(g.x && checkBools[index]){
-            checkBools[index] = false;
-            return g.x;
-        } else if(!checkBools[index] && !g.x){
-            checkBools[index] = true;
+        if(checkBools2[index] == 0 && g.x){
+            checkBools2[index] = 1;
+        } else if(!g.x && checkBools2[index] == 1){
+            if(checkBools[index]){
+                checkBools[index] = false;
+            } else {
+                checkBools[index] = true;
+            }
+            checkBools2[index] = 0;
         }
-        return false;
+        return checkBools[index];
     }
     public boolean returnToggleY(Gamepad g){
         int index = findIndex("y");
-        if(g.y && checkBools[index]){
-            checkBools[index] = false;
-            return g.y;
-        } else if(!checkBools[index] && !g.y){
-            checkBools[index] = true;
+        if(checkBools2[index] == 0 && g.y){
+            checkBools2[index] = 1;
+        } else if(!g.y && checkBools2[index] == 1){
+            if(checkBools[index]){
+                checkBools[index] = false;
+            } else {
+                checkBools[index] = true;
+            }
+            checkBools2[index] = 0;
         }
-        return false;
+        return checkBools[index];
     }
     public boolean returnToggleDPadDown(Gamepad g){
         int index = findIndex("dpad_down");
-        if(g.dpad_down && checkBools[index]){
-            checkBools[index] = false;
-            return g.dpad_down;
-        } else if(!checkBools[index] && !g.dpad_down){
-            checkBools[index] = true;
+        if(checkBools2[index] == 0 && g.dpad_down){
+            checkBools2[index] = 1;
+        } else if(!g.dpad_down && checkBools2[index] == 1){
+            if(checkBools[index]){
+                checkBools[index] = false;
+            } else {
+                checkBools[index] = true;
+            }
+            checkBools2[index] = 0;
         }
-        return false;
+        return checkBools[index];
     }
     public boolean returnToggleDPadUp(Gamepad g){
         int index = findIndex("dpad_up");
-        if(g.dpad_up && checkBools[index]){
-            checkBools[index] = false;
-            return g.dpad_up;
-        } else if(!checkBools[index] && !g.dpad_up){
-            checkBools[index] = true;
+        if(checkBools2[index] == 0 && g.dpad_up){
+            checkBools2[index] = 1;
+        } else if(!g.dpad_up && checkBools2[index] == 1){
+            if(checkBools[index]){
+                checkBools[index] = false;
+            } else {
+                checkBools[index] = true;
+            }
+            checkBools2[index] = 0;
         }
-        return false;
+        return checkBools[index];
     }
     public boolean returnToggleDPadLeft(Gamepad g){
         int index = findIndex("dpad_left");
