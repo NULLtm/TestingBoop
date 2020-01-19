@@ -51,6 +51,8 @@ public class  WABOTTeleop extends OpMode {
 
         runEncoder(false);
 
+        h.BLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         telemetry.addData("Status:", "Initialized");
     }
 
@@ -78,6 +80,8 @@ public class  WABOTTeleop extends OpMode {
     public void loop() {
         // Gamepad input
         input();
+
+        telemetry.addData("ENCODER VALUE:", h.BLMotor.getCurrentPosition());
 
         // Drive train controls
         superDrive();
