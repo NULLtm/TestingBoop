@@ -31,7 +31,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-public class WABOTVuforia {
+public class VuforiaController {
 
     VuforiaLocalizer vuforia;
     VuforiaTrackables targetsSkyStone;
@@ -41,7 +41,7 @@ public class WABOTVuforia {
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    public static final float mmPerInch        = 25.4f;
+    private static final float mmPerInch        = 25.4f;
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     // Constant for Stone Target
@@ -71,12 +71,19 @@ public class WABOTVuforia {
     public Vector3 rotationP = new Vector3(0, 0, 0);
 
     // Constructor
-    public WABOTVuforia(String licenseKey, VuforiaLocalizer.CameraDirection camDir, HardwareMap m, boolean showScreen, boolean isPortrait, WABOTHardware myMap){
+    public VuforiaController(String licenseKey, VuforiaLocalizer.CameraDirection camDir, HardwareMap m, boolean showScreen, boolean isPortrait, WABOTHardware myMap){
         init(licenseKey, showScreen, camDir, m, isPortrait, myMap);
+    }
+    public VuforiaController(String licenseKey, boolean isWebcam, HardwareMap m, boolean showScreen, WABOTHardware myMap){
+        if(isWebcam) {
+            init(licenseKey, showScreen, VuforiaLocalizer.CameraDirection.FRONT, m, false, myMap);
+        } else {
+            init(licenseKey, showScreen, VuforiaLocalizer.CameraDirection.BACK, m, true, myMap);
+        }
     }
 
     // Initializes Vuforia Engine
-    public void init(String key, boolean show, VuforiaLocalizer.CameraDirection camDir, HardwareMap map, boolean isPortrait, WABOTHardware myMap){
+    private void init(String key, boolean show, VuforiaLocalizer.CameraDirection camDir, HardwareMap map, boolean isPortrait, WABOTHardware myMap){
         VuforiaLocalizer.Parameters parameters;
         if(show){
             int cameraMonitorViewId = map.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", map.appContext.getPackageName());
@@ -220,7 +227,7 @@ public class WABOTVuforia {
     }
 
     // This method scans for objects ONCE when called
-    public String run() {
+    public String scan() {
         String returnStr = "NULL";
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
@@ -260,7 +267,7 @@ public class WABOTVuforia {
         return returnStr;
     }
 
-    public void clearVu(){
+    public void clearLastRegister(){
         lastLocation = null;
     }
 }

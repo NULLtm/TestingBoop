@@ -9,9 +9,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.HardwareMapConfig;
+import org.firstinspires.ftc.teamcode.RobotInstance;
 
-public class WABOTHardware {
-    private HardwareMap hardwareMap;
+import java.util.ArrayList;
+import java.util.List;
+
+public class WABOTHardware extends HardwareMapConfig {
 
     final double LEFTARMSERVO_IN = 0.5;
     final double LEFTARMSERVO_OUT = 0.7;
@@ -45,56 +49,71 @@ public class WABOTHardware {
     public Servo RArmServo; //stone grabber servo
     public DcMotor liftMotor; //vertical slides
     public Servo capServo;
-    public DcMotor leftEncoder;
-    public DcMotor rightEncoder;
-    //public DcMotor strafeEncoder;
 
-//hi owen
-//you're adopted
-    protected WABOTHardware(HardwareMap hardwareMap) {
-        this.hardwareMap = hardwareMap;
-        initializeMap();
-    }
-    private void initializeMap() {
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        FLMotor = hardwareMap.get(DcMotor.class, "FLMotor");
-        FRMotor = hardwareMap.get(DcMotor.class, "FRMotor");
-        BLMotor = hardwareMap.get(DcMotor.class, "BLMotor");
-        BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
-        slideArm = hardwareMap.get(DcMotor.class, "slideArm");
-        liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
-        LIntake = hardwareMap.get(DcMotor.class, "LIntake");
-        RIntake = hardwareMap.get(DcMotor.class, "RIntake");
-        LArmServo = hardwareMap.get(Servo.class, "LArmServo");
-        RArmServo = hardwareMap.get(Servo.class, "RArmServo");
-        leftFound = hardwareMap.get(Servo.class, "leftFound");
-        rightFound = hardwareMap.get(Servo.class, "rightFound");
-        capServo = hardwareMap.get(Servo.class, "capServo");
-        //leftEncoder = hardwareMap.get(DcMotor.class, "leftEncoder");
-        //rightEncoder = hardwareMap.get(DcMotor.class, "rightEncoder");
-
-
-
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        BRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        BLMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        FRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        FLMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    public WABOTHardware(HardwareMap hardwareMap, boolean isAutonomous, RobotInstance robot) {
+        super(hardwareMap, isAutonomous, robot);
+        this.isAutonomous = isAutonomous;
     }
 
-    public double getRightEncoderPos(){
-        return RIntake.getCurrentPosition();
+
+    public void initializeMap() {
+        FLMotor = getInternalMap().get(DcMotor.class, "FLMotor");
+        FRMotor = getInternalMap().get(DcMotor.class, "FRMotor");
+        BLMotor = getInternalMap().get(DcMotor.class, "BLMotor");
+        BRMotor = getInternalMap().get(DcMotor.class, "BRMotor");
+        slideArm = getInternalMap().get(DcMotor.class, "slideArm");
+        liftMotor = getInternalMap().get(DcMotor.class, "liftMotor");
+        LIntake = getInternalMap().get(DcMotor.class, "LIntake");
+        RIntake = getInternalMap().get(DcMotor.class, "RIntake");
+        LArmServo = getInternalMap().get(Servo.class, "LArmServo");
+        RArmServo = getInternalMap().get(Servo.class, "RArmServo");
+        leftFound = getInternalMap().get(Servo.class, "leftFound");
+        rightFound = getInternalMap().get(Servo.class, "rightFound");
+        capServo = getInternalMap().get(Servo.class, "capServo");
     }
 
-    public double getLeftEncoderPos(){
-        return slideArm.getCurrentPosition();
+    @Override
+    public void setMotorDirection() {
+
+        // CONVENTION: This original setting is considered DEFAULT forward
+        robot.getDriveController().setPreferredMotorDir(FLMotor, DcMotorSimple.Direction.FORWARD);
+        robot.getDriveController().setPreferredMotorDir(FRMotor, DcMotorSimple.Direction.REVERSE);
+        robot.getDriveController().setPreferredMotorDir(BLMotor, DcMotorSimple.Direction.FORWARD);
+        robot.getDriveController().setPreferredMotorDir(BRMotor, DcMotorSimple.Direction.REVERSE);
     }
 
-    public double getStrafeEncoderPos(){
-        return LIntake.getCurrentPosition();
+    @Override
+    public void setMotorBrakeMode() {
+        robot.getDriveController().setPreferredMotorBrakeMode(FLMotor, DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.getDriveController().setPreferredMotorBrakeMode(FRMotor, DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.getDriveController().setPreferredMotorBrakeMode(BLMotor, DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.getDriveController().setPreferredMotorBrakeMode(BRMotor, DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    @Override
+    public void setMotorMode() {
+        if(isAutonomous){
+            // NOTE: Only reset encoders if you want the relative encoder value to change!!!!
+            robot.getDriveController().setPreferredMotorMode(FLMotor, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.getDriveController().setPreferredMotorMode(FRMotor, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.getDriveController().setPreferredMotorMode(BLMotor, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.getDriveController().setPreferredMotorMode(BRMotor, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            robot.getDriveController().setPreferredMotorMode(FLMotor, DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.getDriveController().setPreferredMotorMode(FRMotor, DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.getDriveController().setPreferredMotorMode(BLMotor, DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.getDriveController().setPreferredMotorMode(BRMotor, DcMotor.RunMode.RUN_USING_ENCODER);
+        } else {
+            robot.getDriveController().setPreferredMotorMode(FLMotor, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.getDriveController().setPreferredMotorMode(FRMotor, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.getDriveController().setPreferredMotorMode(BLMotor, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.getDriveController().setPreferredMotorMode(BRMotor, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
+
+    @Override
+    public void setStartingPositions() {
+        LArmServo.setPosition(LEFTARMSERVO_IN);
+        RArmServo.setPosition(RIGHTARMSERVO_IN);
     }
 }

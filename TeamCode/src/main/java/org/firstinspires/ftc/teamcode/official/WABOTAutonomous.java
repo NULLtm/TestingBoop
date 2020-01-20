@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
+import org.firstinspires.ftc.teamcode.RobotInstance;
+import org.firstinspires.ftc.teamcode.RobotParameters;
 
 import java.util.List;
 
@@ -36,28 +38,12 @@ public class WABOTAutonomous extends LinearOpMode {
     // Percent representing decrease in speed for driver controls
     private final double PRECISION_SPEED_MODIFIER = 0.5;
 
-    // This provides the tick count for each rotation of an encoder, it's helpful for using run to position
-    private final int ENCODER_TICK = 1440;
-    // ANDYMARK 60:1 = 1680
-    // US DIGITAL ENCODER = 1440
-
-    // Conversion constants
-    private final double CM_PER_INCH = 2.56;
-    private final double CM_PER_FOOT = 30.48;
-
-    // Wheel diameter NOTE: Measured in inch
-    private final double DIAMETER = 4;
-
-    // This value is the distance of 1 rev of the wheels measured in INCH!!!!
-    private final double CIRCUMFERENCE = Math.PI*DIAMETER;
-
     private ThreeTrackingWheelLocalizer localizer;
 
     // Hardware map object
     private WABOTHardware h;
 
-    // IMU
-    WABOTImu imu;
+    private RobotInstance robot;
 
 
     /*
@@ -67,24 +53,6 @@ public class WABOTAutonomous extends LinearOpMode {
 
     // Parameters for initializing vuforia
     // NOTE: If Webcam: Direction = BACK, isPortrait = true;
-    private final String VUFORIA_KEY = "ATs85vP/////AAABmedvSEuRQ0j9uYwlATaryQxyeVF6AtDWjTZ/2e6s8KELjPp1fDUV3Nn3X1xEZSoPk0Y81/6kr2k/8Q0xdlNkCDIJ+qBpXM8vpA+5qL7mYY6KthDalcBqD8pKiEBiSy0gW0wzniDtDR/Bf4ndSizQgoI10u9PD248vTfkt8NxJLsgM98pyCyeYZ2c16yLcASypCOhFJvljA7M6DM+qfWgWnOWXiVd2OZLsLtFcHZu4aEKjCHwqnlk9KYSI5BT8I4i+3FoE/JffsIzAl/iXMPu7w6eJJXYqNq7lGCzMRwfn+6OoYA51sy/Ahr/uyWUj/u0nzgF/IlRkteKXks+eUok5kFLeT2KxkbpNVwie11YgQRg";
-    private final CameraDirection CAMERA_DIRECTION = CameraDirection.BACK;
-    private final boolean CAMERA_IS_PORTRAIT = false;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // Initializi1ng robot here!
@@ -92,26 +60,15 @@ public class WABOTAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // Init of robot
+        robot = new RobotInstance("WABOT");
 
-        telemetry.addLine("Status: Initializing, DO NOT PRESS PLAY");
-        telemetry.update();
+        RobotParameters parameters = new RobotParameters();
+        parameters.map = hardwareMap;
+        parameters.isAutonomous = true;
+        parameters.gamepad1 = gamepad1;
+        parameters.gamepad2 = gamepad2;
 
-        h = new WABOTHardware(hardwareMap);
-
-        imu = new WABOTImu(hardwareMap);
-
-        runEncoder(true);
-        runExternalEncoders(true);
-
-        h.LArmServo.setPosition(h.LEFTARMSERVO_IN);
-        h.RArmServo.setPosition(h.RIGHTARMSERVO_IN);
-
-        h.leftFound.setPosition(h.LEFTFOUND_UP);
-        h.rightFound.setPosition(h.RIGHTFOUND_UP);
-
-        telemetry.addLine("Status: READY!");
-        telemetry.update();
+        robot.setParameters(parameters);
 
         waitForStart();
 
@@ -126,65 +83,11 @@ public class WABOTAutonomous extends LinearOpMode {
 
     // Actual instructions for robot! All autonomous code goes here!!!
     private void run(){
-        runDistanceOdometer(-29.25, 0.3);
-
-        sleep(100);
-
-        h.leftFound.setPosition(h.LEFTFOUND_DOWN);
-        h.rightFound.setPosition(h.RIGHTFOUND_DOWN);
     }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-    // Switching motor direction
-    private void motorDir(boolean forward){
-        if(forward){
-            h.BRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            h.BLMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            h.FRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            h.FLMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        } else {
-            h.BRMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            h.BLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            h.FRMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            h.FLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        }
-    }
-
-
-
-
-
-    private void runExternalEncoders(boolean run){
-        h.slideArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        h.RIntake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        h.LIntake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        h.slideArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        h.RIntake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        h.LIntake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-
-
-
-
-
-
-
-
-    public void goToHeading(double heading){
+    /*public void goToHeading(double heading){
         while (Math.abs(imu.getHeading()-heading) > 1.5) {
             double power = Math.pow(3, 0.01*Math.abs(imu.getHeading()-heading))-0.87;
             telemetry.addData("DIFFERENCE:", Math.abs(imu.getHeading()-heading));
@@ -199,103 +102,6 @@ public class WABOTAutonomous extends LinearOpMode {
         stopMotors();
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-    // Uses encoders to move a specific distance away given powers for each motor
-    private void runToPos(double distanceCM, float power1, float power2, float power3, float power4){
-        if(power1 < 0){
-            h.FLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            power1 *= -1;
-        }
-        if(power2 < 0){
-            h.FRMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            power2 *= -1;
-        }
-        if(power3 < 0){
-            h.BLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            power3 *= -1;
-        }
-        if(power4 < 0){
-            h.BRMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            power4 *= -1;
-        }
-        double revs = distanceCM/CIRCUMFERENCE;
-        int ticksToRun = (int)(revs * ENCODER_TICK);
-        runEncoder(true);
-        h.FLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        h.FRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        h.BLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        h.BRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        h.FLMotor.setTargetPosition(ticksToRun);
-        h.FRMotor.setTargetPosition(ticksToRun);
-        h.BLMotor.setTargetPosition(ticksToRun);
-        h.BRMotor.setTargetPosition(ticksToRun);
-        h.FLMotor.setPower(power1);
-        h.FRMotor.setPower(power2);
-        h.BLMotor.setPower(power3);
-        h.BRMotor.setPower(power4);
-        while (h.FLMotor.isBusy() && h.FRMotor.isBusy() && h.BLMotor.isBusy() && h.BRMotor.isBusy()){
-            //This line was intentionally left blank
-        }
-        stopMotors();
-        motorDir(true);
-        runEncoder(false);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-    // Position the Robot According to Vuforia marker
-    /*private void vuforiaPosition(int posX){
-        if(vuforia.translation.get(1) > posX){
-            linearDrive(-0.2f);
-        } else  if(vuforia.translation.get(1) < posX){
-            linearDrive(0.2f);
-        }
-
-        while(Math.abs(posX - vuforia.translation.get(1)) > 3){
-
-        }
-
-        stopMotors();
-    }*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private void runDistanceOdometer(double distanceINCH, double power){
@@ -317,194 +123,6 @@ public class WABOTAutonomous extends LinearOpMode {
     }
 
 
-
-
-
-    // DO NOT TOUCH
-    // Robot moves some distance (CM) with a specified power applied
-    private void runToPos(double distanceCM, float power){
-
-        if(power < 0){
-            power *= -1;
-            motorDir(false);
-        }
-        double revs = distanceCM/CIRCUMFERENCE;
-        int ticksToRun = (int)(revs * ENCODER_TICK);
-        runEncoder(true);
-        h.FLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        h.FRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        h.BLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        h.BRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        h.FLMotor.setTargetPosition(ticksToRun);
-        h.FRMotor.setTargetPosition(ticksToRun);
-        h.BLMotor.setTargetPosition(ticksToRun);
-        h.BRMotor.setTargetPosition(ticksToRun);
-        h.FLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        h.BLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        h.FRMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        h.BRMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        linearDrive(power);
-        while (h.FLMotor.isBusy() && h.FRMotor.isBusy() && h.BLMotor.isBusy() && h.BRMotor.isBusy()){
-            //This line was intentionally left blank
-        }
-        stopMotors();
-        runEncoder(false);
-        motorDir(true);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // DO NOT TOUCH
-    // Switch between non-encoder and encoder modes of the motors
-    private void runEncoder(boolean withEncoder){
-        if(withEncoder) {
-            h.FLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            h.FRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            h.BLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            h.BRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            h.FLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            h.FRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            h.BLMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            h.BRMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }else{
-            h.FLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            h.FRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            h.BLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            h.BRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // DO NOT TOUCH
-    // Runs motors at a specified power
-    private void linearDrive(float power){
-        h.FLMotor.setPower(power);
-        h.FRMotor.setPower(power);
-        h.BLMotor.setPower(power);
-        h.BRMotor.setPower(power);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // DO NOT TOUCH
-    // Same as "linearDrive" but sets power to 0
-    private void stopMotors() {
-        h.FLMotor.setPower(0);
-        h.FRMotor.setPower(0);
-        h.BLMotor.setPower(0);
-        h.BRMotor.setPower(0);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // DO NOT TOUCH
-    // NOTE: Used only with mecanum wheels!
-    // Strafes based on power and distance
-    private void strafe (double distanceCM, float power){
-        distanceCM *= 1.43*0.79;
-        if(power < 0){
-            power *= -1;
-            runToPos(distanceCM, -power, power, power,-power);
-        } else if (power > 0){
-            runToPos(distanceCM, power, -power, -power,power);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // DO NOT TOUCH
-    // Turns robot
-    private void turn (int direction, double power){
-        if(direction == -1){
-            h.FLMotor.setPower(-power);
-            h.BRMotor.setPower(power);
-            h.FRMotor.setPower(power);
-            h.BLMotor.setPower(-power);
-        } else if (direction == 1){
-            h.FLMotor.setPower(power);
-            h.BRMotor.setPower(-power);
-            h.FRMotor.setPower(-power);
-            h.BLMotor.setPower(power);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // DO NOT TOUCH
     // Maintains heading and adjusts if pushed: NEED GYRO
     private void driveStraight(int targetHeading, double startSpeed){
@@ -522,42 +140,6 @@ public class WABOTAutonomous extends LinearOpMode {
         h.BRMotor.setPower(startSpeed - power);
 
     }
-
-
-
-
-
-
-
-
-
-
-    private void strafeLinear(int direction, double power){
-        if(direction > 0){
-            h.FRMotor.setPower(-power);
-            h.FLMotor.setPower(power);
-            h.BRMotor.setPower(power);
-            h.BLMotor.setPower(-power);
-        } else if(direction < 0){
-            h.FRMotor.setPower(power);
-            h.FLMotor.setPower(-power);
-            h.BRMotor.setPower(-power);
-            h.BLMotor.setPower(power);
-        } else {
-            h.FRMotor.setPower(0);
-            h.FLMotor.setPower(0);
-            h.BRMotor.setPower(0);
-            h.BLMotor.setPower(0);
-        }
-    }
-
-
-
-
-
-
-
-
 
 
     // DO NOT TOUCH
@@ -633,8 +215,7 @@ public class WABOTAutonomous extends LinearOpMode {
 
 
 
-
-
+*/
 
 
     // DO NOT TOUCH
@@ -652,151 +233,6 @@ public class WABOTAutonomous extends LinearOpMode {
             }
         } */
         return Math.abs(h);
-    }
-
-
-
-
-
-
-
-
-    // Tank drive controls
-    private void tankDrive(){
-        double leftStickY = gamepad1.left_stick_y;
-        double rightStickY = gamepad1.right_stick_y;
-
-        h.FLMotor.setPower(leftStickY);
-        h.FRMotor.setPower(rightStickY);
-        h.BLMotor.setPower(leftStickY);
-        h.BRMotor.setPower(rightStickY);
-    }
-
-    // 360 omni-drive controls
-    private void superDrive(){
-
-        // Input
-        double leftStickX = gamepad1.left_stick_x;
-        double leftStickY = -gamepad1.left_stick_y;
-        double rightStickX = gamepad1.right_stick_x;
-
-        // Calculating angle between X and Y inputs on the stick
-        double angle = Math.atan2(leftStickY, leftStickX);
-        angle = Math.toDegrees(angle);
-        angle = Math.abs(angle);
-        // Altering value for sake of the program
-        if(leftStickY < 0){
-            angle = 360 - angle;
-        }
-
-        // Power variables
-        double v1 = 0, v2 = 0, v3 = 0, v4 = 0;
-
-        // Represents what quadrant our stick is in
-        int quadrant = 0;
-
-        // Calculating current quadrant
-        if(leftStickX == 0 && leftStickY == 0){
-            quadrant = 0;
-        } else if(angle >= 0 && angle <= 90){
-            quadrant = 1;
-        } else if(angle > 90 && angle <= 180){
-            quadrant = 2;
-        } else if(angle > 180 && angle <= 270){
-            quadrant = 3;
-        } else if(angle > 270 && angle <= 360) {
-            quadrant = 4;
-        }
-
-        // Getting our composite input used as a backbone value for movement
-        // Short explanation: Always a net Y value, but uses a different percent from each direction based on Y value
-        double sampleY = leftStickY;
-        double magnitude = Math.abs(sampleY) + Math.abs((1-Math.abs(sampleY))*leftStickX);
-
-        // Based on the quadrant, change the underlying function each wheel depends on
-        if(quadrant == 1){
-            v1 = magnitude*((angle-45)/45);
-            v3 = magnitude*((angle-45)/45);
-            v2 = magnitude;
-            v4 = magnitude;
-        } else if(quadrant == 2){
-            v1 = magnitude;
-            v3 = magnitude;
-            v2 = magnitude*((135-angle)/45);
-            v4 = magnitude*((135-angle)/45);
-        } else if(quadrant == 3){
-            v1 = magnitude*((225-angle)/45);
-            v3 = magnitude*((225-angle)/45);
-            v2 = -1*magnitude;
-            v4 = -1*magnitude;
-        } else if(quadrant == 4){
-            v1 = -1*magnitude;
-            v3 = -1*magnitude;
-            v2 = -1*magnitude*((315-angle)/315);
-            v4 = -1*magnitude*((315-angle)/315);
-        } else if(quadrant == 0){
-            v1 = 0;
-            v2 = 0;
-            v3 = 0;
-            v4 = 0;
-        }
-
-        // If not using omni-drive, switch to normal turn
-        if(rightStickX != 0){
-            v1 = -1*rightStickX;
-            v2 = rightStickX;
-            v3 = rightStickX;
-            v4 = -1*rightStickX;
-        }
-
-        // Precision controls based on bumpers pressed
-        if(gamepad1.left_bumper && !gamepad1.right_bumper){
-            v1 *= 0.5;
-            v2 *= 0.5;
-            v3 *= 0.5;
-            v4 *= 0.5;
-        }
-        if(gamepad1.right_bumper && !gamepad1.left_bumper){
-            v1 *= 0.5;
-            v2 *= 0.5;
-            v3 *= 0.5;
-            v4 *= 0.5;
-        }
-        if(gamepad1.right_bumper && gamepad1.left_bumper){
-            v1 *= 0.25;
-            v2 *= 0.25;
-            v3 *= 0.25;
-            v4 *= 0.25;
-        }
-    }
-
-    // Normal holonomic drive
-    private void holoDrive(){
-        double leftStickX = gamepad1.right_stick_x;
-        double leftStickY = -gamepad1.left_stick_y;
-        double rightStickX = gamepad1.left_stick_x;
-        double rightStickY = gamepad1.right_stick_y;
-
-        double r = Math.hypot(leftStickX, leftStickY);
-        double robotAngle = Math.atan2(leftStickY, leftStickX) - (Math.PI / 4);
-        double leftX = rightStickX;
-        double turn = leftX;
-
-        double v1 = r * Math.cos(robotAngle) + turn;
-        double v2 = r * Math.sin(robotAngle) - turn;
-        double v3 = r * Math.sin(robotAngle) + turn;
-        double v4 = r * Math.cos(robotAngle) - turn;
-
-        if(gamepad1.right_bumper || gamepad1.left_bumper){
-            v1 = v1 * PRECISION_SPEED_MODIFIER;
-            v2 = v2 * PRECISION_SPEED_MODIFIER;
-            v3 = v3 * PRECISION_SPEED_MODIFIER;
-            v4 = v4 * PRECISION_SPEED_MODIFIER;
-        }
-        h.FLMotor.setPower(v1);
-        h.FRMotor.setPower(v2);
-        h.BLMotor.setPower(v3);
-        h.BRMotor.setPower(v4);
     }
 
     // Clamp function

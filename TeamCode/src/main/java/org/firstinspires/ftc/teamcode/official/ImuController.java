@@ -13,18 +13,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import java.util.Locale;
 
-public class WABOTImu {
+public class ImuController {
 
-    Orientation angles;
+    private Orientation angles;
 
-    BNO055IMU imu;
+    private BNO055IMU imu;
 
-    public WABOTImu(HardwareMap map){
+    public ImuController(HardwareMap map){
         imu = map.get(BNO055IMU.class, "imu");
         init();
     }
 
-    public void init(){
+    private void init(){
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -53,11 +53,11 @@ public class WABOTImu {
         return a;
     }
 
-    String formatAngle(AngleUnit angleUnit, double angle) {
+    private String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
 
-    String formatDegrees(double degrees){
+    private String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 }
