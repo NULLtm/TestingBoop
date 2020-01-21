@@ -27,7 +27,6 @@ public class  WABOTTeleop extends OpMode {
 
 
     // Declare OpMode members.
-    private WABOTHardware h;
     private RobotInstance robot;
 
     private boolean hasStartedCap = false;
@@ -62,8 +61,6 @@ public class  WABOTTeleop extends OpMode {
     public void loop() {
         // Gamepad input
         input();
-
-        robot.printToConsole("ENCODER VALUE:", h.BLMotor.getCurrentPosition());
 
         // Drive train controls
         robot.update();
@@ -110,20 +107,20 @@ public class  WABOTTeleop extends OpMode {
         robot.getConfig().liftMotor.setPower(liftPower);
 
         if(robot.getController2().returnToggleX()){
-            robot.getConfig().LArmServo.setPosition(h.LEFTARMSERVO_OUT);
-            robot.getConfig().RArmServo.setPosition(h.RIGHTARMSERVO_OUT);
+            robot.getConfig().LArmServo.setPosition(robot.getConfig().LEFTARMSERVO_OUT);
+            robot.getConfig().RArmServo.setPosition(robot.getConfig().RIGHTARMSERVO_OUT);
         } else {
-            robot.getConfig().LArmServo.setPosition(h.LEFTARMSERVO_IN);
-            robot.getConfig().RArmServo.setPosition(h.RIGHTARMSERVO_IN);
+            robot.getConfig().LArmServo.setPosition(robot.getConfig().LEFTARMSERVO_IN);
+            robot.getConfig().RArmServo.setPosition(robot.getConfig().RIGHTARMSERVO_IN);
         }
 
         if(gamepad2.dpad_down && !hasStartedCap){
-            robot.getConfig().capServo.setPosition(h.CAPSERVO_OUT);
+            robot.getConfig().capServo.setPosition(robot.getConfig().CAPSERVO_OUT);
             hasStartedCap = true;
             capTime = System.currentTimeMillis();
         }
         if(hasStartedCap && System.currentTimeMillis()-capTime > 500){
-            robot.getConfig().capServo.setPosition(h.CAPSERVO_IN);
+            robot.getConfig().capServo.setPosition(robot.getConfig().CAPSERVO_IN);
             hasStartedCap = false;
         }
 
@@ -142,10 +139,10 @@ public class  WABOTTeleop extends OpMode {
         double leftStickY = robot.getController1().left_stick_y();
         double rightStickY = robot.getController1().right_stick_y();
 
-        h.FLMotor.setPower(leftStickY);
-        h.FRMotor.setPower(rightStickY);
-        h.BLMotor.setPower(leftStickY);
-        h.BRMotor.setPower(rightStickY);
+        robot.getConfig().FLMotor.setPower(leftStickY);
+        robot.getConfig().FRMotor.setPower(rightStickY);
+        robot.getConfig().BLMotor.setPower(leftStickY);
+        robot.getConfig().BRMotor.setPower(rightStickY);
     }
 
     // Normal holonomic drive
@@ -171,21 +168,10 @@ public class  WABOTTeleop extends OpMode {
             v3 = v3 * PRECISION_SPEED_MODIFIER;
             v4 = v4 * PRECISION_SPEED_MODIFIER;
         }
-        h.FLMotor.setPower(v1);
-        h.FRMotor.setPower(v2);
-        h.BLMotor.setPower(v3);
-        h.BRMotor.setPower(v4);
-    }
-
-    // Clamp a double between a max and a min
-    public double clamp(double min, double max, double value){
-        if(value < min){
-            value = min;
-        } else if(value > max){
-            value = max;
-        }
-
-        return value;
+        robot.getConfig().FLMotor.setPower(v1);
+        robot.getConfig().FRMotor.setPower(v2);
+        robot.getConfig().BLMotor.setPower(v3);
+        robot.getConfig().BRMotor.setPower(v4);
     }
 
 }

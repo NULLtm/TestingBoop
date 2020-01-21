@@ -1,7 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.mecanum.SampleMecanumDriveREV;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +17,8 @@ public abstract class DriveImplementation {
     public DcMotor BLMotor;
     public DcMotor BRMotor;
     public RobotInstance robot;
+    private SampleMecanumDriveREV driveClass;
+    private Trajectory currentTrajectory;
 
     private DriveConstants constants = new DriveConstants();
 
@@ -23,6 +30,7 @@ public abstract class DriveImplementation {
         BLMotor = backLeftMotor;
         BRMotor = backRightMotor;
         this.robot = robot;
+        driveClass = new SampleMecanumDriveREV(robot.getConfig().getInternalMap());
     }
 
     public void setPreferredMotorDir(DcMotor motor, DcMotorSimple.Direction newMotorConfig){
@@ -40,6 +48,23 @@ public abstract class DriveImplementation {
             preferredMotorDir[3] = newMotorConfig;
         }
     }
+
+    public TrajectoryBuilder getPathBuilder(){
+        return driveClass.trajectoryBuilder();
+    }
+
+    public void followPath(){
+        if(currentTrajectory != null) {
+            driveClass.followTrajectorySync(currentTrajectory);
+        } else {
+            robot.printToConsole("Path Follow Failed! Trajectory = null");
+        }
+    }
+
+    public void setPath(Trajectory trajectory){
+        currentTrajectory = trajectory;
+    }
+
     public void setPreferredMotorMode(DcMotor motor, DcMotor.RunMode newMotorConfig){
         if(FLMotor == motor){
             FLMotor.setMode(newMotorConfig);

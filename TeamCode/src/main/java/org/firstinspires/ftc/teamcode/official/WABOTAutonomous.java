@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.official;
 
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -70,7 +72,18 @@ public class WABOTAutonomous extends LinearOpMode {
 
         robot.setParameters(parameters);
 
+        // Accessing our path builder from our robot instance
+        TrajectoryBuilder trajectoryBuilder = robot.getDriveController().getPathBuilder();
+
+        // Go forward 10 units
+        Trajectory trajectory = trajectoryBuilder.forward(10).build();
+
+        // Setting our path we want to follow in our robot instance
+        robot.getDriveController().setPath(trajectory);
+
         waitForStart();
+
+        robot.getDriveController().followPath();
 
         run();
     }
