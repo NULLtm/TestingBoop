@@ -43,6 +43,9 @@ public class  WABOTTeleop extends OpMode {
         parameters.isAutonomous = false;
         parameters.gamepad1 = gamepad1;
         parameters.gamepad2 = gamepad2;
+        parameters.useRevIMU = false;
+        parameters.useVuforia = false;
+        parameters.console = telemetry;
 
         robot.setParameters(parameters);
     }
@@ -63,6 +66,10 @@ public class  WABOTTeleop extends OpMode {
         input();
 
         // Drive train controls
+        robot.printToConsole("Left Encoder: ", robot.getConfig().getLeftEncoderPos());
+        robot.printToConsole("Right Encoder: ", robot.getConfig().getRightEncoderPos());
+        robot.printToConsole("Strafe Encoder: ", robot.getConfig().getStrafeEncoderPos());
+        //robot.printToConsole("LiftMotor Encoder Value: ", robot.getConfig().liftMotor.getCurrentPosition());
         robot.update();
     }
 
@@ -90,8 +97,8 @@ public class  WABOTTeleop extends OpMode {
         robot.getConfig().LIntake.setPower(-intakePow);
         robot.getConfig().RIntake.setPower(intakePow);
 
-        double liftPower = -gamepad2.right_stick_y;
-        double armSlidePower = gamepad2.left_stick_y;
+        double liftPower = -gamepad2.left_stick_y;
+        double armSlidePower = -gamepad2.right_stick_y;
 
         if(gamepad2.left_bumper && !gamepad2.right_bumper){
             liftPower *= 0.5;
@@ -107,11 +114,9 @@ public class  WABOTTeleop extends OpMode {
         robot.getConfig().liftMotor.setPower(liftPower);
 
         if(robot.getController2().returnToggleX()){
-            robot.getConfig().LArmServo.setPosition(robot.getConfig().LEFTARMSERVO_OUT);
-            robot.getConfig().RArmServo.setPosition(robot.getConfig().RIGHTARMSERVO_OUT);
+            robot.getConfig().armServo.setPosition(robot.getConfig().ARMSERVO_OUT);
         } else {
-            robot.getConfig().LArmServo.setPosition(robot.getConfig().LEFTARMSERVO_IN);
-            robot.getConfig().RArmServo.setPosition(robot.getConfig().RIGHTARMSERVO_IN);
+            robot.getConfig().armServo.setPosition(robot.getConfig().ARMSERVO_IN);
         }
 
         if(gamepad2.dpad_down && !hasStartedCap){

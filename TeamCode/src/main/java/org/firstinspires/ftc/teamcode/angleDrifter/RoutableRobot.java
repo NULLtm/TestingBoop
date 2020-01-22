@@ -6,7 +6,6 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Vector3;
 
 import org.firstinspires.ftc.teamcode.angleDrifter.RoutePoint;
-import org.firstinspires.ftc.teamcode.official.WABOTImu;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +83,7 @@ public class RoutableRobot {
         }
     }
 
-    public void runToPoint(WABOTImu imu, int index, DcMotor FLMotor, DcMotor FRMotor, DcMotor BLMotor, DcMotor BRMotor, DcMotor strafeOdometer, DcMotor leftOdometer, DcMotor rightOdometer) {
+    /*public void runToPoint(WABOTImu imu, int index, DcMotor FLMotor, DcMotor FRMotor, DcMotor BLMotor, DcMotor BRMotor, DcMotor strafeOdometer, DcMotor leftOdometer, DcMotor rightOdometer) {
         for(Vector2D x: points){
             currentPointI = index;
             while(Vector2D.distance(points.get(currentPointI), robotPosition) > DISTANCE_TOLERANCE){
@@ -250,18 +249,18 @@ public class RoutableRobot {
                     obj1.position.x -= right.x*changeMove;
                     obj1.position.y -= right.y*changeMove;
                 }*/
-            } /*else {
-                hasI = false;
-                quadrant = 4;
-                getAngle = true;
-                currentPointI++;
-                runOnce = true;
-            }*/
-        }
-    }
+            //} /*else {
+               // hasI = false;
+                //quadrant = 4;
+                //getAngle = true;
+                //currentPointI++;
+                //runOnce = true;
+            //}
+        //}
+    //}
 
-    private double getNeatRotation(double heading){
-        if(heading < 0){
+    private double getNeatRotation(double heading) {
+        if (heading < 0) {
             heading += 360;
         }
 

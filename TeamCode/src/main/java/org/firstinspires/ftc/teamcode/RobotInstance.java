@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -87,7 +88,7 @@ public class RobotInstance {
 
     public void setParameters(RobotParameters parameters){
 
-        this.drive = new WABOTOmniDrive(mapConfig.FLMotor, mapConfig.FRMotor, mapConfig.BLMotor, mapConfig.BRMotor, this);
+        this.drive = new WABOTOmniDrive(parameters.map.get(DcMotor.class, "FLMotor"), parameters.map.get(DcMotor.class, "FRMotor"), parameters.map.get(DcMotor.class, "BLMotor"), parameters.map.get(DcMotor.class, "BRMotor"), this, parameters.map);
         this.mapConfig = new WABOTHardware(parameters.map, parameters.isAutonomous, this);
         this.controller1 = new WABOTController(parameters.gamepad1);
         this.controller2 = new WABOTController(parameters.gamepad2);

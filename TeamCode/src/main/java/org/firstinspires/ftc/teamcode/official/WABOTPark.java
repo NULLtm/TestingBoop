@@ -43,13 +43,13 @@ public class WABOTPark extends LinearOpMode {
     private final double CIRCUMFERENCE = Math.PI*DIAMETER;
 
     // Our custom vuforia object
-    private WABOTVuforia vuforia;
+    //private WABOTVuforia vuforia;
 
     // Hardware map object
     private WABOTHardware h;
 
     // IMU
-    WABOTImu imu;
+    //WABOTImu imu;
 
 
     /*
@@ -89,7 +89,7 @@ public class WABOTPark extends LinearOpMode {
         telemetry.addLine("Status: Initializing, DO NOT PRESS PLAY");
         telemetry.update();
 
-        h = new WABOTHardware(hardwareMap);
+        //h = new WABOTHardware(hardwareMap);
 
         runEncoder(true);
 
@@ -148,7 +148,7 @@ public class WABOTPark extends LinearOpMode {
 
 
 
-    public void goToHeading(double heading){
+    /*public void goToHeading(double heading){
 
         long time = System.currentTimeMillis();
         while ((System.currentTimeMillis()-time) < 3000 && Math.abs(imu.getHeading()-heading) > 1.5) {
@@ -164,7 +164,7 @@ public class WABOTPark extends LinearOpMode {
         }
         stopMotors();
 
-    }
+    }*/
 
 
 
@@ -250,7 +250,7 @@ public class WABOTPark extends LinearOpMode {
 
 
     // Position the Robot According to Vuforia marker
-    private void vuforiaPosition(int posX){
+    /*private void vuforiaPosition(int posX){
         if(vuforia.translation.get(1) > posX){
             linearDrive(-0.2f);
         } else  if(vuforia.translation.get(1) < posX){
@@ -262,7 +262,7 @@ public class WABOTPark extends LinearOpMode {
         }
 
         stopMotors();
-    }
+    }*/
 
 
 
@@ -476,7 +476,7 @@ public class WABOTPark extends LinearOpMode {
 
     // DO NOT TOUCH
     // Maintains heading and adjusts if pushed: NEED GYRO
-    private void driveStraight(int targetHeading, double startSpeed){
+    /*private void driveStraight(int targetHeading, double startSpeed){
         double heading = imu.getHeading();
 
         telemetry.addData("Heading: ", heading);
@@ -490,7 +490,7 @@ public class WABOTPark extends LinearOpMode {
         h.BLMotor.setPower(startSpeed + power);
         h.BRMotor.setPower(startSpeed - power);
 
-    }
+    }/*
 
 
 
@@ -621,7 +621,7 @@ public class WABOTPark extends LinearOpMode {
             }
         } */
         //return Math.abs(h);
-        return 0;
+        //return 0;
     }
 
 
@@ -779,4 +779,3 @@ public class WABOTPark extends LinearOpMode {
 
         return value;
     }*/
-}

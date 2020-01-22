@@ -1,18 +1,24 @@
 package org.firstinspires.ftc.teamcode.official;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.DriveImplementation;
 import org.firstinspires.ftc.teamcode.RobotInstance;
 
 public class WABOTOmniDrive extends DriveImplementation {
 
-    public WABOTOmniDrive(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, RobotInstance robot){
-        super(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor, robot);
+
+    private RobotInstance robot;
+
+    public WABOTOmniDrive(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, RobotInstance robot, HardwareMap map){
+        super(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor, map);
+        this.robot = robot;
     }
 
     @Override
     public void updateDrive() {
+        robot.printToConsole("Running Drive Code");
         double leftStickX = robot.getController1().left_stick_x();
         double leftStickY = -robot.getController1().left_stick_y();
         double rightStickY = -robot.getController1().right_stick_y();

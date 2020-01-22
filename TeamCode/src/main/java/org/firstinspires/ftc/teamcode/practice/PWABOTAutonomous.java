@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.teamcode.official.WABOTVuforia;
+//import org.firstinspires.ftc.teamcode.official.WABOTVuforia;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.FRONT;
 
@@ -45,7 +45,7 @@ public class PWABOTAutonomous extends LinearOpMode {
     private final VuforiaLocalizer.CameraDirection CAMERA_DIRECTION = FRONT;
 
     // Our custom vuforia object
-    private WABOTVuforia vuforia;
+    //private WABOTVuforia vuforia;
 
     // Hardware map object
     private PWABOTHardware h;
@@ -98,7 +98,7 @@ public class PWABOTAutonomous extends LinearOpMode {
             // Left blank
         }
 
-        vuforia.activate();
+        //vuforia.activate();
 
         telemetry.addLine("Status: READY!");
         telemetry.update();

@@ -43,13 +43,13 @@ public class WABOTFoundBlueWall extends LinearOpMode {
     private final double CIRCUMFERENCE = Math.PI*DIAMETER;
 
     // Our custom vuforia object
-    private WABOTVuforia vuforia;
+    //private WABOTVuforia vuforia;
 
     // Hardware map object
     private WABOTHardware h;
 
     // IMU
-    WABOTImu imu;
+    //WABOTImu imu;
 
 
     /*
@@ -89,7 +89,7 @@ public class WABOTFoundBlueWall extends LinearOpMode {
         telemetry.addLine("Status: Initializing, DO NOT PRESS PLAY");
         telemetry.update();
 
-        h = new WABOTHardware(hardwareMap);
+       // h = new WABOTHardware(hardwareMap);
 
         runEncoder(true);
 
@@ -109,14 +109,14 @@ public class WABOTFoundBlueWall extends LinearOpMode {
         telemetry.addLine("Status: Imu");
         telemetry.update();
 
-        imu = new WABOTImu(hardwareMap);
+        //imu = new WABOTImu(hardwareMap);
 
         telemetry.addLine("Status: READY!");
         telemetry.update();
 
         waitForStart();
 
-        imu.activate();
+       // imu.activate();
 
         run();
     }
@@ -195,7 +195,7 @@ public class WABOTFoundBlueWall extends LinearOpMode {
     public void goToHeading(double heading){
 
         long time = System.currentTimeMillis();
-        while ((System.currentTimeMillis()-time) < 3000 && Math.abs(imu.getHeading()-heading) > 1.5) {
+        /*while ((System.currentTimeMillis()-time) < 3000 && Math.abs(imu.getHeading()-heading) > 1.5) {
             double power = Math.pow(3, 0.01*Math.abs(imu.getHeading()-heading))-0.87;
             telemetry.addData("DIFFERENCE:", Math.abs(imu.getHeading()-heading));
             telemetry.update();
@@ -205,7 +205,7 @@ public class WABOTFoundBlueWall extends LinearOpMode {
             if (imu.getHeading() < heading) {
                 turn(-1, power);
             }
-        }
+        }*/
         stopMotors();
 
     }
@@ -295,7 +295,7 @@ public class WABOTFoundBlueWall extends LinearOpMode {
 
     // Position the Robot According to Vuforia marker
     private void vuforiaPosition(int posX){
-        if(vuforia.translation.get(1) > posX){
+        /*if(vuforia.translation.get(1) > posX){
             linearDrive(-0.2f);
         } else  if(vuforia.translation.get(1) < posX){
             linearDrive(0.2f);
@@ -303,7 +303,7 @@ public class WABOTFoundBlueWall extends LinearOpMode {
 
         while(Math.abs(posX - vuforia.translation.get(1)) > 3){
 
-        }
+        }*/
 
         stopMotors();
     }
@@ -521,18 +521,18 @@ public class WABOTFoundBlueWall extends LinearOpMode {
     // DO NOT TOUCH
     // Maintains heading and adjusts if pushed: NEED GYRO
     private void driveStraight(int targetHeading, double startSpeed){
-        double heading = imu.getHeading();
+        //double heading = imu.getHeading();
 
-        telemetry.addData("Heading: ", heading);
+        //telemetry.addData("Heading: ", heading);
         telemetry.update();
 
-        double difference = heading - targetHeading;
-        double power = difference/90.0;
+       // double difference = heading - targetHeading;
+       // double power = difference/90.0;
 
-        h.FLMotor.setPower(startSpeed + power);
-        h.FRMotor.setPower(startSpeed - power);
-        h.BLMotor.setPower(startSpeed + power);
-        h.BRMotor.setPower(startSpeed - power);
+        //h.FLMotor.setPower(startSpeed + power);
+        //h.FRMotor.setPower(startSpeed - power);
+        //h.BLMotor.setPower(startSpeed + power);
+        //h.BRMotor.setPower(startSpeed - power);
 
     }
 
@@ -575,7 +575,7 @@ public class WABOTFoundBlueWall extends LinearOpMode {
 
     // DO NOT TOUCH
     // Usable is there is a gyro installed
-    private void turnByDegree (int degree) {
+    /*private void turnByDegree (int degree) {
         double currentPower = 0.5;
         boolean right;
         double turnTo;
@@ -631,7 +631,7 @@ public class WABOTFoundBlueWall extends LinearOpMode {
         }
 
         stopMotors();
-    }
+    }*/
 
 
 

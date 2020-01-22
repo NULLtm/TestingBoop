@@ -16,7 +16,7 @@ public abstract class DriveImplementation {
     public DcMotor FRMotor;
     public DcMotor BLMotor;
     public DcMotor BRMotor;
-    public RobotInstance robot;
+    public HardwareMap hMap;
     private SampleMecanumDriveREV driveClass;
     private Trajectory currentTrajectory;
 
@@ -24,17 +24,17 @@ public abstract class DriveImplementation {
 
     private DcMotorSimple.Direction[] preferredMotorDir = new DcMotorSimple.Direction[4];
 
-    public DriveImplementation(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, RobotInstance robot){
+    public DriveImplementation(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, HardwareMap map){
         FLMotor = frontLeftMotor;
         FRMotor = frontRightMotor;
         BLMotor = backLeftMotor;
         BRMotor = backRightMotor;
-        this.robot = robot;
-        driveClass = new SampleMecanumDriveREV(robot.getConfig().getInternalMap());
+        this.hMap = map;
+        //driveClass = new SampleMecanumDriveREV(map);
     }
 
-    public void setPreferredMotorDir(DcMotor motor, DcMotorSimple.Direction newMotorConfig){
-        if(FLMotor == motor){
+    /*public void setPreferredMotorDir(DcMotor motor, DcMotorSimple.Direction newMotorConfig){
+        if(FLMotor.equals(motor)){
             FLMotor.setDirection(newMotorConfig);
             preferredMotorDir[0] = newMotorConfig;
         } else if(FRMotor == motor){
@@ -47,7 +47,7 @@ public abstract class DriveImplementation {
             BRMotor.setDirection(newMotorConfig);
             preferredMotorDir[3] = newMotorConfig;
         }
-    }
+    }*/
 
     public TrajectoryBuilder getPathBuilder(){
         return driveClass.trajectoryBuilder();
@@ -56,8 +56,6 @@ public abstract class DriveImplementation {
     public void followPath(){
         if(currentTrajectory != null) {
             driveClass.followTrajectorySync(currentTrajectory);
-        } else {
-            robot.printToConsole("Path Follow Failed! Trajectory = null");
         }
     }
 
