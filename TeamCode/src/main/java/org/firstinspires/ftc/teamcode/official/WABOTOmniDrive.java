@@ -18,7 +18,6 @@ public class WABOTOmniDrive extends DriveImplementation {
 
     @Override
     public void updateDrive() {
-        robot.printToConsole("Running Drive Code");
         double leftStickX = robot.getController1().left_stick_x();
         double leftStickY = -robot.getController1().left_stick_y();
         double rightStickY = -robot.getController1().right_stick_y();

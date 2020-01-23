@@ -90,6 +90,7 @@ public final class R {
         public static final int dark_purple = 0x7f030015;
         public static final int dark_red = 0x7f030016;
         public static final int dark_teal = 0x7f030017;
+        public static final int dashboardColor = 0x7f030018;
         public static final int firstblue = 0x7f030019;
         public static final int firstgreen = 0x7f03001a;
         public static final int firstorgange = 0x7f03001b;
