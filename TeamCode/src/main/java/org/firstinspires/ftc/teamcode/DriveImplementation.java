@@ -143,7 +143,7 @@ public abstract class DriveImplementation {
             power4 *= -1;
         }
         double revs = distanceCM/constants.WHEEL_CIRCUMFERENCE;
-        int ticksToRun = (int)(revs * constants.DRIVE_TICKS_PER_REV);
+        int ticksToRun = (int)(revs * 1680);
         runEncoder(true);
         FLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         FRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -172,7 +172,7 @@ public abstract class DriveImplementation {
             motorDir(false);
         }
         double revs = distanceCM/constants.WHEEL_CIRCUMFERENCE;
-        int ticksToRun = (int)(revs * constants.DRIVE_TICKS_PER_REV);
+        int ticksToRun = (int)(revs * 1680);
         runEncoder(true);
         FLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         FRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

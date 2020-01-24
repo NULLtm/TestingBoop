@@ -34,7 +34,7 @@ import static org.firstinspires.ftc.teamcode.DriveConstants.getMotorVelocityF;
  * satisfies the requirements, SampleMecanumDriveREVOptimized is highly recommended.
  */
 public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront, BRMotorEncoder;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
@@ -44,24 +44,25 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
+        //imu = hardwareMap.get(BNO055IMU.class, "imu");
+        //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        //parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        //imu.initialize(parameters);
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
-        BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+        //BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "FLMotor");
         leftRear = hardwareMap.get(DcMotorEx.class, "BLMotor");
         rightRear = hardwareMap.get(DcMotorEx.class, "BRMotor");
         rightFront = hardwareMap.get(DcMotorEx.class, "FRMotor");
+        BRMotorEncoder = hardwareMap.get(DcMotorEx.class, "LIntake");
 
-        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront, BRMotorEncoder);
 
         for (DcMotorEx motor : motors) {
-            if (RUN_USING_ENCODER) {
+            if (RUN_USING_ENCODER && !motor.equals(BRMotorEncoder)) {
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -91,9 +92,11 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     @Override
     public void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients) {
         for (DcMotorEx motor : motors) {
-            motor.setPIDFCoefficients(runMode, new PIDFCoefficients(
-                    coefficients.kP, coefficients.kI, coefficients.kD, getMotorVelocityF()
-            ));
+            if(!motor.equals(BRMotorEncoder)){
+                motor.setPIDFCoefficients(runMode, new PIDFCoefficients(
+                        coefficients.kP, coefficients.kI, coefficients.kD, getMotorVelocityF()
+                ));
+            }
         }
     }
 
@@ -102,7 +105,15 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     public List<Double> getWheelPositions() {
         List<Double> wheelPositions = new ArrayList<>();
         for (DcMotorEx motor : motors) {
-            wheelPositions.add(encoderTicksToInches(motor.getCurrentPosition()));
+            if(!motor.equals(rightRear)){
+                if(motor.equals(BRMotorEncoder)){
+                    wheelPositions.set(2, encoderTicksToInches(motor.getCurrentPosition()*-1));
+                } else {
+                    wheelPositions.add(encoderTicksToInches(motor.getCurrentPosition()));
+                }
+            } else {
+                wheelPositions.add(encoderTicksToInches(0));
+            }
         }
         return wheelPositions;
     }
@@ -111,7 +122,15 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     public List<Double> getWheelVelocities() {
         List<Double> wheelVelocities = new ArrayList<>();
         for (DcMotorEx motor : motors) {
-            wheelVelocities.add(encoderTicksToInches(motor.getVelocity()));
+            if(!motor.equals(rightRear)){
+                if(motor.equals(BRMotorEncoder)){
+                    wheelVelocities.set(2, encoderTicksToInches(motor.getVelocity()*-1));
+                } else {
+                    wheelVelocities.add(encoderTicksToInches(motor.getVelocity()));
+                }
+            } else {
+                wheelVelocities.add(encoderTicksToInches(0));
+            }
         }
         return wheelVelocities;
     }

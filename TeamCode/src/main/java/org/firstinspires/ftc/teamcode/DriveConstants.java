@@ -45,21 +45,14 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 4;
-    public static double GEAR_RATIO = 45/35; // all in inches!
+    public static double WHEEL_RADIUS = 2;
+    public static double GEAR_RATIO = 76.86; // all in inches!
     public static double TRACK_WIDTH = 14.9;
-
-    public final static int ODOMETER_TICKS_PER_REV = 8192;
-    public final static int DRIVE_TICKS_PER_REV = 1680;
-    public final static int LIFT_TICKS_PER_REV = 1680;
-    public final static int INTAKE_TICKS_PER_REV = 288;
-    public final static int ARM_TICKS_PER_REV = 1680; // TODO: Find this value
 
     public final double WHEEL_CIRCUMFERENCE = Math.PI*WHEEL_RADIUS*2;
 
 
     public final static int LIFT_BOTTOM_THRESHHOLD = 0;
-    public final static int LIFT_TOP_THRESHHOLD = LIFT_TICKS_PER_REV*5;
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -88,7 +81,7 @@ public class DriveConstants {
 
 
     public static double encoderTicksToInches(double ticks) {
-        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / ODOMETER_TICKS_PER_REV;
+        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / MOTOR_CONFIG.getTicksPerRev();
     }
 
     public static double rpmToVelocity(double rpm) {
@@ -102,7 +95,7 @@ public class DriveConstants {
 
     public static double getTicksPerSec() {
         // note: MotorConfigurationType#getAchieveableMaxTicksPerSecond() isn't quite what we want
-        return (MOTOR_CONFIG.getMaxRPM() * ODOMETER_TICKS_PER_REV / 60.0);
+        return (MOTOR_CONFIG.getMaxRPM() * MOTOR_CONFIG.getTicksPerRev() / 60.0);
     }
 
     public static double getMotorVelocityF() {
